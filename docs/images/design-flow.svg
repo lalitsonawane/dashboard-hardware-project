@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="320" viewBox="0 0 980 320" role="img" aria-labelledby="title desc">
+  <title id="title">v1 product design flow</title>
+  <desc id="desc">Sensors to ESP32 to FastAPI to Dashboard to Cloud AI, then Plant, Room, and Events apps.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0176d3"/>
+    </marker>
+    <style>
+      .box { fill:#fff; stroke:#8eb6f5; stroke-width:1.5; }
+      .app { fill:#eef4ff; stroke:#8eb6f5; stroke-width:1.5; }
+      .n { font:700 13px system-ui,sans-serif; fill:#032d60; }
+      .s { font:11px system-ui,sans-serif; fill:#54698d; }
+      .k { font:700 10px system-ui,sans-serif; fill:#0176d3; }
+      .bg { fill:#f7fafc; }
+    </style>
+  </defs>
+  <rect width="980" height="320" class="bg" rx="8"/>
+  <text x="24" y="30" class="n">Product data path (M1 ’ M4)</text>
+  <text x="24" y="48" class="s">Runtime path in the console /flow page  advisory AI only, no actuation</text>
+
+  <!-- stages -->
+  <g transform="translate(24,70)">
+    <rect width="150" height="88" rx="8" class="box"/>
+    <text x="12" y="24" class="k">01 · M1</text>
+    <text x="12" y="46" class="n">Sensors</text>
+    <text x="12" y="66" class="s">BME280 · soil · PIR</text>
+  </g>
+  <line x1="174" y1="114" x2="198" y2="114" stroke="#0176d3" stroke-width="2" marker-end="url(#a)"/>
+
+  <g transform="translate(198,70)">
+    <rect width="150" height="88" rx="8" class="box"/>
+    <text x="12" y="24" class="k">02</text>
+    <text x="12" y="46" class="n">ESP32 node</text>
+    <text x="12" y="66" class="s">Wi-Fi · JSON POST</text>
+  </g>
+  <line x1="348" y1="114" x2="372" y2="114" stroke="#0176d3" stroke-width="2" marker-end="url(#a)"/>
+
+  <g transform="translate(372,70)">
+    <rect width="160" height="88" rx="8" class="box"/>
+    <text x="12" y="24" class="k">03 · M2</text>
+    <text x="12" y="46" class="n">FastAPI + SQLite</text>
+    <text x="12" y="66" class="s">Tokens · TLS</text>
+  </g>
+  <line x1="532" y1="114" x2="556" y2="114" stroke="#0176d3" stroke-width="2" marker-end="url(#a)"/>
+
+  <g transform="translate(556,70)">
+    <rect width="160" height="88" rx="8" class="box"/>
+    <text x="12" y="24" class="k">04 · M3</text>
+    <text x="12" y="46" class="n">Dashboard</text>
+    <text x="12" y="66" class="s">Plant · Room · Events</text>
+  </g>
+  <line x1="716" y1="114" x2="740" y2="114" stroke="#0176d3" stroke-width="2" marker-end="url(#a)"/>
+
+  <g transform="translate(740,70)">
+    <rect width="210" height="88" rx="8" class="box"/>
+    <text x="12" y="24" class="k">05 · M4</text>
+    <text x="12" y="46" class="n">Cloud AI</text>
+    <text x="12" y="66" class="s">Summary · schema · cache</text>
+  </g>
+
+  <!-- fan-out -->
+  <text x="24" y="200" class="n">Three apps on one node</text>
+  <g transform="translate(24,220)">
+    <rect width="280" height="70" rx="8" class="app"/>
+    <text x="14" y="28" class="n">Plant Care</text>
+    <text x="14" y="50" class="s">Soil probe + BME280 ’ watering advice</text>
+  </g>
+  <g transform="translate(330,220)">
+    <rect width="280" height="70" rx="8" class="app"/>
+    <text x="14" y="28" class="n">Room Monitor</text>
+    <text x="14" y="50" class="s">BME280 ’ comfort / daily summary</text>
+  </g>
+  <g transform="translate(636,220)">
+    <rect width="310" height="70" rx="8" class="app"/>
+    <text x="14" y="28" class="n">Home Events</text>
+    <text x="14" y="50" class="s">PIR motion timing only  no identity</text>
+  </g>
+</svg>
