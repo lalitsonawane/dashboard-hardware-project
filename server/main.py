@@ -99,12 +99,21 @@ def load_state() -> dict:
         state = json.loads(row[0])
     finally:
         con.close()
-    known = {section["id"] for section in catalog["sections"]}
+    catalog_order = [section["id"] for section in catalog["sections"]]
+    known = set(catalog_order)
     custom_ids = {item["id"] for item in state.get("custom", [])}
     order = [item for item in state.get("order", []) if item in known or item in custom_ids]
-    for section_id in known:
-        if section_id not in order:
-            order.append(section_id)
+    for index, section_id in enumerate(catalog_order):
+        if section_id in order:
+            continue
+        insert_at = len(order)
+        for previous in reversed(catalog_order[:index]):
+            if previous in order:
+                insert_at = order.index(previous) + 1
+                break
+        else:
+            insert_at = 0
+        order.insert(insert_at, section_id)
     state["order"] = order
     state.setdefault("hidden", [])
     state.setdefault("checks", {})
@@ -207,6 +216,7 @@ def clean_state(payload: dict, catalog: dict) -> dict:
 
 
 @app.get("/")
+@app.get("/flow")
 def index() -> FileResponse:
     return FileResponse(STATIC / "index.html")
 

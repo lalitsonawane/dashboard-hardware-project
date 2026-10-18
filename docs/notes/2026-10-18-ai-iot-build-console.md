@@ -6,6 +6,8 @@ Repo mirror: `docs/notes/2026-10-18-ai-iot-build-console.md`
 
 A shared web console tracks the v1 ESP32 build from the 18 October 2026 report. Developers mark the 10-day plan, acceptance checks, tests and parts procurement. The layout is modular: sections can be hidden, reordered or added.
 
+The console includes a **Purpose** section (immediately after Home): functional problem → solution narrative, then technical how-it-works, with local product photos under `static/purpose/` (attribution in that folder).
+
 ## Key decisions
 
 - The console is a build tracker for people, separate from the future sensor dashboard (Plant, Room, Events charts fed by FastAPI).
