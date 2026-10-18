@@ -17,6 +17,7 @@ The console includes a **Purpose** section (immediately after Home): functional 
 - An access code gates the public link. The code is an environment variable or `data/access-code.txt`, and that file stays out of git.
 - Visual language follows a Lightning-style header, record cards, path, list views and an Edit page drawer.
 - Authorship credit uses catalog `project.owner` and roles **Idea owner** / **Developer** only.
+- Purpose stays immediately after Home (`overview` → `purpose`); workspace order is pinned server-side so Edit page cannot bury it.
 
 ## Artifacts
 
