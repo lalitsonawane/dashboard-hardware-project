@@ -1,0 +1,20 @@
+[Unit]
+Description=Cloudflare Tunnel for AI IoT Build Console
+Documentation=file:///home/ubuntu/cursor-projects/dashboard-hardware-project/docs/hosting.md
+After=network-online.target iot-build-console.service
+Wants=network-online.target
+Requires=iot-build-console.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+# Named-tunnel config (credentials + hostname) lives under ~/.cloudflared after login.
+ExecStart=/home/ubuntu/.local/bin/cloudflared tunnel --config /home/ubuntu/.cloudflared/iot-build-console.yml run
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

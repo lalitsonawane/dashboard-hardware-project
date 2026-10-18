@@ -20,10 +20,10 @@ Open `http://127.0.0.1:8080`. The first start writes an access code to `data/acc
 
 ## Remote access
 
-The process listens on `0.0.0.0`. A Cloudflare quick tunnel publishes it:
+On the AWS project host the console runs under systemd on `127.0.0.1:8080`, with Caddy terminating TLS for **https://app.maoulabs.dpdns.org/** (Cloudflare-proxied `*.maoulabs.dpdns.org`, same pattern as Hermes). See [docs/hosting.md](docs/hosting.md) for manage/monitor commands.
+
+For a one-off local share without Caddy:
 
 ```bash
 cloudflared tunnel --url http://127.0.0.1:8080
 ```
-
-Use the printed `https://….trycloudflare.com` link plus the access code.

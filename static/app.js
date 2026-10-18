@@ -891,6 +891,8 @@ async function boot() {
   const body = await response.json();
   catalog = body.catalog;
   state = body.state;
+  const logoutBtn = document.querySelector("#logout");
+  if (logoutBtn) logoutBtn.classList.toggle("hidden", Boolean(body.public));
   showApp();
 }
 
