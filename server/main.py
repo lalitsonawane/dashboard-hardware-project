@@ -96,6 +96,17 @@ def load_catalog() -> dict:
     return json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
 
 
+def pin_home_and_purpose(order: list[str]) -> list[str]:
+    """Home (overview) first, then Purpose — product rule; other sections keep relative order."""
+    rest = [item for item in order if item not in {"overview", "purpose"}]
+    pinned: list[str] = []
+    if "overview" in order:
+        pinned.append("overview")
+    if "purpose" in order:
+        pinned.append("purpose")
+    return pinned + rest
+
+
 def load_state() -> dict:
     catalog = load_catalog()
     con = connect()
@@ -124,7 +135,7 @@ def load_state() -> dict:
         else:
             insert_at = 0
         order.insert(insert_at, section_id)
-    state["order"] = order
+    state["order"] = pin_home_and_purpose(order)
     state.setdefault("hidden", [])
     state.setdefault("checks", {})
     state.setdefault("dayStatus", {})
@@ -133,6 +144,9 @@ def load_state() -> dict:
     state.setdefault("notes", {})
     state.setdefault("custom", [])
     state.setdefault("log", [])
+    # Ensure Purpose is never left hidden after Home (restore if a bad edit hid it).
+    if "purpose" in known:
+        state["hidden"] = [item for item in state["hidden"] if item != "purpose"]
     return state
 
 
@@ -212,9 +226,10 @@ def clean_state(payload: dict, catalog: dict) -> dict:
                     "text": str(entry.get("text", ""))[:240],
                 }
             )
+    hidden = [item for item in payload.get("hidden", []) if item in allowed and item != "purpose"]
     return {
-        "order": order,
-        "hidden": [item for item in payload.get("hidden", []) if item in allowed],
+        "order": pin_home_and_purpose(order),
+        "hidden": hidden,
         "checks": flag_map(payload.get("checks", {}), check_ids),
         "dayStatus": day_status,
         "testResult": test_result,
