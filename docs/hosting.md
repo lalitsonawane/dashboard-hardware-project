@@ -1,17 +1,29 @@
 # Hosting — AI IoT Build Console (AWS VM)
 
+> Primary overview (screenshots, diagrams, quick start): **[README.md](../README.md)**  
+> Live URL: **https://app.maoulabs.dpdns.org/**
+
 Public access reuses the **Hermes pattern** on this host:
 
-- **uvicorn** on `127.0.0.1:8080` (systemd)
+- **uvicorn** on `127.0.0.1:8080` via systemd (`iot-build-console.service`)
 - **Caddy** on `:80` / `:443` terminates TLS and reverse-proxies the hostname
 - **Cloudflare** proxies `*.maoulabs.dpdns.org` to this origin (existing wildcard)
-- Access-code gate in the app stays required
+- Deploy uses **`DASHBOARD_PUBLIC=1`** — no access-code login wall (re-enable with `0`)
+
+```mermaid
+flowchart LR
+  U[Browser] --> CF[Cloudflare wildcard]
+  CF --> C[Caddy TLS]
+  C --> V[uvicorn 127.0.0.1:8080]
+```
+
+![Hosting architecture](images/architecture.svg)
 
 ## Public URL
 
-**https://app.maoulabs.dpdns.org/**
+**https://app.maoulabs.dpdns.org/** · Design flow: `/flow`
 
-No extra DNS step is required while the zone wildcard `*.maoulabs.dpdns.org` remains proxied to this VM (same as `hermes.maoulabs.dpdns.org` historically).
+No extra DNS step is required while the zone wildcard `*.maoulabs.dpdns.org` remains proxied to this VM.
 
 ## Services
 
@@ -62,9 +74,9 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/
 curl -sS -o /dev/null -w '%{http_code}\n' https://app.maoulabs.dpdns.org/
 ```
 
-### Access gate
+## Access gate
 
-Deployed with **`DASHBOARD_PUBLIC=1`** — no access-code login wall. Anyone with the URL can use the console (including saving workspace state).
+Deployed with **`DASHBOARD_PUBLIC=1`** — anyone with the URL can use the console (including saving workspace state).
 
 Re-enable the gate later:
 
@@ -78,7 +90,7 @@ sudo systemctl restart iot-build-console
 
 Access-code files under `data/` remain unused while public mode is on.
 
-## Rotate access code (only needed when the gate is re-enabled)
+### Rotate access code (only when the gate is re-enabled)
 
 ```bash
 cd ~/cursor-projects/dashboard-hardware-project
@@ -97,8 +109,8 @@ sudo systemctl restart iot-build-console
 ```bash
 cd ~/cursor-projects/dashboard-hardware-project
 git fetch origin
-git checkout main   # or your deploy branch
-git pull --ff-only
+git checkout main
+git pull --ff-only origin main
 .venv/bin/python -m pip install -r requirements.txt
 sudo systemctl restart iot-build-console
 curl -sS -o /dev/null -w '%{http_code}\n' https://app.maoulabs.dpdns.org/
@@ -113,4 +125,4 @@ curl -sS -o /dev/null -w '%{http_code}\n' https://app.maoulabs.dpdns.org/
 
 ## Optional: Cloudflare named tunnel
 
-This host already uses Caddy + the `maoulabs.dpdns.org` wildcard. Named-tunnel units under `deploy/systemd/cloudflared-*.service` are optional alternatives if you later move off origin TLS; they are **not** required for `app.maoulabs.dpdns.org`.
+This host already uses Caddy + the `maoulabs.dpdns.org` wildcard. Named-tunnel units under `deploy/systemd/cloudflared-*.service` are optional alternatives if you later move off origin TLS; they are **not** required for `app.maoulabs.dpdns.org`. One-off demos without Caddy can still use `cloudflared tunnel --url http://127.0.0.1:8080`.

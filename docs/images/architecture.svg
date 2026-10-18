@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="280" viewBox="0 0 920 280" role="img" aria-labelledby="title desc">
+  <title id="title">Build Console hosting architecture</title>
+  <desc id="desc">Cloudflare proxies app.maoulabs.dpdns.org to Caddy on the AWS VM, which reverse-proxies to uvicorn on loopback port 8080 with SQLite state.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#0176d3"/>
+    </marker>
+    <style>
+      .box { fill:#fff; stroke:#8eb6f5; stroke-width:1.5; }
+      .title { font:700 14px system-ui,sans-serif; fill:#032d60; }
+      .sub { font:12px system-ui,sans-serif; fill:#54698d; }
+      .label { font:600 11px system-ui,sans-serif; fill:#0176d3; }
+      .bg { fill:#f3f3f3; }
+    </style>
+  </defs>
+  <rect width="920" height="280" class="bg" rx="8"/>
+  <text x="24" y="32" class="title">Public hosting path</text>
+  <text x="24" y="52" class="sub">Same wildcard pattern as Hermes on this AWS VM · app listens on loopback only</text>
+
+  <rect x="24" y="90" width="160" height="100" rx="8" class="box"/>
+  <text x="104" y="128" text-anchor="middle" class="label">BROWSER</text>
+  <text x="104" y="152" text-anchor="middle" class="title">Users</text>
+  <text x="104" y="172" text-anchor="middle" class="sub">HTTPS</text>
+
+  <line x1="184" y1="140" x2="230" y2="140" stroke="#0176d3" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="230" y="90" width="180" height="100" rx="8" class="box"/>
+  <text x="320" y="128" text-anchor="middle" class="label">CLOUDFLARE</text>
+  <text x="320" y="152" text-anchor="middle" class="title">*.maoulabs.dpdns.org</text>
+  <text x="320" y="172" text-anchor="middle" class="sub">app.maoulabs.dpdns.org</text>
+
+  <line x1="410" y1="140" x2="456" y2="140" stroke="#0176d3" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="456" y="90" width="180" height="100" rx="8" class="box"/>
+  <text x="546" y="128" text-anchor="middle" class="label">AWS VM · CADDY</text>
+  <text x="546" y="152" text-anchor="middle" class="title">TLS :80 / :443</text>
+  <text x="546" y="172" text-anchor="middle" class="sub">reverse_proxy</text>
+
+  <line x1="636" y1="140" x2="682" y2="140" stroke="#0176d3" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="682" y="78" width="214" height="124" rx="8" class="box"/>
+  <text x="789" y="112" text-anchor="middle" class="label">SYSTEMD</text>
+  <text x="789" y="136" text-anchor="middle" class="title">iot-build-console</text>
+  <text x="789" y="158" text-anchor="middle" class="sub">127.0.0.1:8080</text>
+  <text x="789" y="178" text-anchor="middle" class="sub">FastAPI + SQLite</text>
+  <text x="789" y="198" text-anchor="middle" class="sub">DASHBOARD_PUBLIC=1</text>
+
+  <text x="24" y="250" class="sub">No public bind on 8080 · access-code gate off in deploy · re-enable with DASHBOARD_PUBLIC=0</text>
+</svg>
