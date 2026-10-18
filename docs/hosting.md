@@ -62,9 +62,23 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8080/
 curl -sS -o /dev/null -w '%{http_code}\n' https://app.maoulabs.dpdns.org/
 ```
 
-Sign in with the code in `data/access-code.txt` (or env `DASHBOARD_ACCESS_CODE`).
+### Access gate
 
-## Rotate access code
+Deployed with **`DASHBOARD_PUBLIC=1`** — no access-code login wall. Anyone with the URL can use the console (including saving workspace state).
+
+Re-enable the gate later:
+
+```bash
+sudo systemctl edit iot-build-console
+# [Service]
+# Environment=DASHBOARD_PUBLIC=0
+sudo systemctl daemon-reload
+sudo systemctl restart iot-build-console
+```
+
+Access-code files under `data/` remain unused while public mode is on.
+
+## Rotate access code (only needed when the gate is re-enabled)
 
 ```bash
 cd ~/cursor-projects/dashboard-hardware-project
@@ -94,6 +108,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' https://app.maoulabs.dpdns.org/
 
 - App listens on **127.0.0.1:8080** only (not on the public interface).
 - Prefer leaving security-group **8080 closed**; public HTTP(S) is 80/443 via Caddy + Cloudflare.
+- With `DASHBOARD_PUBLIC=1`, the console is world-writable by anyone who has the URL — treat the hostname as semi-public.
 - Keep `data/access-code.txt`, `data/session-secret.txt`, and `*.db` out of git.
 
 ## Optional: Cloudflare named tunnel

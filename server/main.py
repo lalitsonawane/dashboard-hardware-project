@@ -27,6 +27,16 @@ app = FastAPI(title="AI IoT Build Console")
 app.mount("/static", StaticFiles(directory=STATIC), name="static")
 
 
+def public_access() -> bool:
+    """When true, skip the access-code gate (open console). Re-enable by unsetting or setting 0/false."""
+    raw = os.environ.get("DASHBOARD_PUBLIC", "").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
+def authed(request: Request) -> bool:
+    return public_access() or cookie_ok(request)
+
+
 def _read_secret(path: Path) -> str:
     if path.exists():
         return path.read_text(encoding="utf-8").strip()
@@ -223,13 +233,22 @@ def index() -> FileResponse:
 
 @app.get("/api/bootstrap")
 def bootstrap(request: Request) -> JSONResponse:
-    if not cookie_ok(request):
-        return JSONResponse({"authenticated": False}, status_code=401)
-    return JSONResponse({"authenticated": True, "catalog": load_catalog(), "state": load_state()})
+    if not authed(request):
+        return JSONResponse({"authenticated": False, "public": False}, status_code=401)
+    return JSONResponse(
+        {
+            "authenticated": True,
+            "public": public_access(),
+            "catalog": load_catalog(),
+            "state": load_state(),
+        }
+    )
 
 
 @app.post("/api/login")
 async def login(request: Request) -> JSONResponse:
+    if public_access():
+        return JSONResponse({"ok": True, "public": True})
     body = await request.json()
     code = str(body.get("code", ""))
     if not hmac.compare_digest(code, access_code()):
@@ -250,14 +269,14 @@ async def login(request: Request) -> JSONResponse:
 
 @app.post("/api/logout")
 def logout() -> Response:
-    response = JSONResponse({"ok": True})
+    response = JSONResponse({"ok": True, "public": public_access()})
     response.delete_cookie(COOKIE, path="/")
     return response
 
 
 @app.put("/api/state")
 async def put_state(request: Request) -> JSONResponse:
-    if not cookie_ok(request):
+    if not authed(request):
         return JSONResponse({"authenticated": False}, status_code=401)
     payload = await request.json()
     state = clean_state(payload, load_catalog())
