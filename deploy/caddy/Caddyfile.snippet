@@ -1,0 +1,6 @@
+# Merge into /etc/caddy/Caddyfile on the AWS VM (Hermes wildcard zone).
+# Covered by Cloudflare-proxied *.maoulabs.dpdns.org → this origin.
+
+app.maoulabs.dpdns.org {
+	reverse_proxy 127.0.0.1:8080
+}

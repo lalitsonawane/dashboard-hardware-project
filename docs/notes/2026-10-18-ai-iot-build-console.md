@@ -27,5 +27,5 @@ The console includes a **Purpose** section (immediately after Home): functional 
 
 ## Open follow-ups
 
-- Replace the quick tunnel with a stable hostname when the host is chosen.
+- Public host: https://app.maoulabs.dpdns.org/ (Caddy + Cloudflare wildcard `*.maoulabs.dpdns.org`; systemd `iot-build-console`).
 - The sensor dashboard in section 11 of the report (live charts and on-demand AI) is still the product UI, not this build console.

@@ -1,0 +1,23 @@
+# Copy to ~/.cloudflared/iot-build-console.yml after:
+#   cloudflared tunnel login
+#   cloudflared tunnel create iot-build-console
+# Then replace TUNNEL_UUID, CREDENTIALS_FILE, and HOSTNAME.
+#
+# Wildcard DNS (preferred): in the Cloudflare zone for your apex domain, create:
+#   Type  CNAME
+#   Name  *
+#   Target  <TUNNEL_UUID>.cfargotunnel.com
+#   Proxy  Proxied (orange cloud)
+# Cloudflare Universal SSL covers *.yourdomain.com (single-level wildcard).
+# Pick a specific hostname under that wildcard for this app, e.g. iot-build.yourdomain.com
+
+tunnel: TUNNEL_UUID
+credentials-file: /home/ubuntu/.cloudflared/TUNNEL_UUID.json
+
+ingress:
+  - hostname: HOSTNAME.example.com
+    service: http://127.0.0.1:8080
+  # Optional: catch other wildcard hosts with a 404 until assigned
+  # - hostname: "*.example.com"
+  #   service: http_status:404
+  - service: http_status:404
