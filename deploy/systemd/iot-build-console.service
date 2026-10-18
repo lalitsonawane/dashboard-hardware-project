@@ -1,0 +1,25 @@
+[Unit]
+Description=AI IoT Build Console (uvicorn)
+Documentation=file:///home/ubuntu/cursor-projects/dashboard-hardware-project/docs/hosting.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/cursor-projects/dashboard-hardware-project
+Environment=PYTHONUNBUFFERED=1
+# Bind loopback only — public HTTPS is via Caddy (app.maoulabs.dpdns.org).
+Environment=PORT=8080
+# Open console (no access-code wall). Set to 0/false to re-enable the gate.
+Environment=DASHBOARD_PUBLIC=1
+ExecStart=/home/ubuntu/cursor-projects/dashboard-hardware-project/.venv/bin/python -m uvicorn server.main:app --host 127.0.0.1 --port 8080
+Restart=on-failure
+RestartSec=3
+# Soft hardening (SQLite + static files need home-dir write under data/)
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
