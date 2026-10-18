@@ -441,6 +441,33 @@ const renderers = {
   troubleshooting: renderFixes,
 };
 
+function ownerName() {
+  return (catalog && catalog.project && catalog.project.owner) || "Lalit Sonawane";
+}
+
+function renderOwnerCredit(variant = "plaque") {
+  const name = ownerName();
+  if (variant === "compact") {
+    return `<aside class="owner-credit owner-credit-compact" aria-label="Idea owner and developer">
+      <span class="owner-mono" aria-hidden="true">LS</span>
+      <span class="owner-compact-copy"><strong>${esc(name)}</strong><span>Idea owner · Developer</span></span>
+    </aside>`;
+  }
+  return `<aside class="owner-credit owner-credit-plaque reveal" aria-label="Idea owner and developer">
+    <div class="owner-credit-glow" aria-hidden="true"></div>
+    <div class="owner-mono owner-mono-lg" aria-hidden="true">LS</div>
+    <div class="owner-credit-body">
+      <p class="eyebrow">Project authorship</p>
+      <p class="owner-name">${esc(name)}</p>
+      <div class="owner-roles">
+        <span class="owner-role">${iconBadge("decisions", "ui-icon-inline")}Idea owner</span>
+        <span class="owner-role">${iconBadge("console", "ui-icon-inline")}Developer</span>
+      </div>
+      <p class="muted owner-blurb">Originated and developed this AI-enabled IoT build — plant care, room environment, and privacy-bounded home events on one ESP32 node.</p>
+    </div>
+  </aside>`;
+}
+
 function renderPageNav() {
   const current = page();
   return `<div class="page-nav">
@@ -625,6 +652,7 @@ function renderFlow() {
         <h1>${esc(flow.title)}</h1>
         <p class="muted flow-intro">${esc(flow.intro)}</p>
       </div>
+      ${renderOwnerCredit("compact")}
     </div>
     <section class="section card flow-panel">
       <div class="section-head"><h2>Product data path</h2><span class="pill ok">M1 → M4</span></div>
@@ -652,6 +680,7 @@ function renderConsole() {
             ${iconBadge("esp32")}${iconBadge("sensors")}${iconBadge("ai")}
           </div>
         </div>
+        ${renderOwnerCredit("plaque")}
       </div>
     </div>
     ${sections
